@@ -1,0 +1,40 @@
+body {
+    font-family: sans-serif;
+  }
+
+.wiki-img{
+    width: 100%;
+}
+
+.wiki-item{
+    margin: 10px;
+    box-shadow: 10px;
+}
+
+.wiki-content{
+    margin: 10px;
+}
+
+.container{
+
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+@media only screen and (min-width: 600px) {  /*https://www.w3schools.com/css/css_rwd_mediaqueries.asp */
+    .wiki-content{
+        margin: 10px;
+        flex: 1;    /* https://developer.mozilla.org/en-US/docs/Web/CSS/flex*/
+        flex-flow: row-reverse;
+    }
+
+    .wiki-text{
+        min-width: 50%;
+        max-width: 50%;
+    }
+    .img-container{
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+  }
