@@ -12,42 +12,40 @@ function initializeCode() {
     let getU = document.getElementById("getUsers");
     info.addEventListener("submit", async function(){
         event.preventDefault();
-        let name = document.getElementById("name");
-        let email = document.getElementById("email");
+        let Dname = document.getElementById("name");
+        let name = Dname.value
+        let Demail = document.getElementById("email");
+        let email = Demail.value
         // console.log(name.value)
         // console.log(email.value)
         console.log(await fetch("/users", { 
             method: "POST",
             body: JSON.stringify({
-            name: name.value,
-            email: email.value
+            name: name,
+            email: email
             }),
             headers: {
-            "Content-type": "application/json; charset=UTF-8"
+            "Content-type": "application/json"
             }
         })); // https://www.freecodecamp.org/news/javascript-post-request-how-to-send-an-http-post-request-in-js/
+
+        Dname.value = ""
+        Demail.value = ""
       })
-    // getU.addEventListener("onmousedown", function(){
-    //     console.log("got here");
-    //     console.log(fetch("/users"))
-    // })
-    
 }
 
 async function buttonclick(){
 
     let incomingData = await fetch("/users")
-    let users = incomingData.json()
-    //let users2 = JSON.parse(incomingData)
-    console.log(users.body);
-    //console.log(users2);
+    let users = await incomingData.json()
 
     let list = document.getElementById("userList") 
-
-    // for (let index = 0; index < users.length; index++) {
-    //     let listPart = document.createElement("li")
-    //     listPart = users[index].name + " - " + users[index].email;
-    //     list.appendChild(listPart);
-    // }
+    list.innerHTML = '';  //https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript?page=2&tab=scoredesc#tab-top
+    console.log(users.users)
+    for (let index = 0; index < users.users.length; index++) {
+        let listPart = document.createElement("li")
+        listPart.innerHTML = users.users[index].name + " - " + users.users[index].email;
+        list.appendChild(listPart);
+    }
 
 }

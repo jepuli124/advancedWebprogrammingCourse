@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/main.js"></script> 
+    <title>Document</title>
+</head>
+<body>
+    <form id="todoForm">
+        <label for="userInput">user: </label> <input type="text" id="userInput">
+        <label for="todoInput">todo: </label> <input type="text" id="todoInput"> 
+        <input type="submit" id="submit-data" value="enter">
+    </form>
+    <br>
+    <p id="confirmation"></p>
+    <form id="searchForm">
+        <label for="searchInput">user: </label> <input type="text" id="searchInput">
+        <input type="submit" id="search" value="search">
+    </form>
+    <ul id="todoList"></ul>
+    <button id="deleteUser" onclick="buttonclick()" style="display: none;">delete user</button>
+    
+</body>
+</html>

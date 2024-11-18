@@ -1,11 +1,13 @@
-import express, {Express, json} from "express"
+import express, {Express, json, Router} from "express"
 import path from "path";
+import router from "./src/index";
 
 const app: Express = express()
 const port = 3000 
 
 app.use(express.json()); //parses the incoming post body
 app.use(express.static(path.join(__dirname, "../public")))
+app.use("/", router)
 
 //const http = require("http");
 
@@ -16,10 +18,10 @@ type TUser =
         name: string,
         email: string
     }
-let list: TUser[] = [];
+let users: TUser[] = [];
 
 app.get('/hello', (req, res) =>{
-    res.send({msg: "Hello world"})
+    res.send({msg: "Hello world!"})
 });
 
 app.get('/echo/:id', (req, res) =>{
@@ -40,14 +42,16 @@ app.post('/users', (req, res) => {
         name: req.body.name,
         email: req.body.email
     }
-    list.push(user);
-    res.send({msg : "User successfully added"})
+    console.log("user: ", user)
+    users.push(user);
+    res.send({message : "User successfully added"})
 });
 
 app.get('/users', (req, res) =>{
     //console.log("get users" + JSON.stringify(list))
     //res.sendStatus(201)//.json(list);     // https://stackabuse.com/bytes/how-to-return-status-codes-in-express/
-    res.status(201).json(JSON.stringify({list: list}));
+    console.log("list of users: ", users)
+    res.status(201).json({users: users});
     
 });
 
