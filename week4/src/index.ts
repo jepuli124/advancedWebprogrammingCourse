@@ -1,5 +1,6 @@
 import {Request, Response, Router} from "express"
 import fs from "fs"
+import path from "path";
 
 const router: Router = Router()
 
@@ -11,11 +12,57 @@ type TUser =
 
 let users: TUser[] = [];
 
+
+function setup(){
+    try {
+        fs.open("./data.json", "r", (err, fd) => {
+            if(err !== null){
+                fs.open("./data.json", "wx", (err, fd) => {
+                    if(fd !== undefined){
+                        fs.close(fd)
+                    }
+                })
+            } else {
+                readFromFile()
+                console.log("File found")
+            }
+            if(fd !== undefined){
+                fs.close(fd)
+            }
+            
+        }) 
+    } catch (error) {
+        console.log("File not found")
+    }
+    
+    }
+
+function writeToFile(){
+    try { //https://nodejs.org/api/fs.html#fspromisesreadfilepath-options
+        const filePath = path.resolve('./data.json');
+        fs.writeFile(filePath, JSON.stringify(users),  'utf8' , (err) => {});
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+async function readFromFile(){
+    try { //https://nodejs.org/api/fs.html#fspromisesreadfilepath-options
+        const filePath = path.resolve('./data.json');
+        fs.readFile(filePath, {encoding: 'utf8'}, (err, data) => {
+            users = JSON.parse(data)
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+
+
 router.post('/add', (req, res) => {
     let UserExist: Boolean = false
     for (let index = 0; index < users.length; index++) {
         if (req.body.name == users[index].name){
-            console.log(users[index].todos)
             users[index].todos.push(req.body.todos)
             UserExist = true
             break;
@@ -28,14 +75,15 @@ router.post('/add', (req, res) => {
         } 
         users.push(newUser)
     }
+    writeToFile()
     res.send({msg: `Todo added successfully for user ${req.body.name}`})
     }); 
-router.get('/todo/:id', (req, res) =>{
+router.get('/todos/:id', (req, res) =>{
     let UserExist: Boolean = false
     for (let index = 0; index < users.length; index++) {
         if (req.params["id"] == users[index].name){
 
-            res.send({todos: users[index].todos})
+            res.json({user: req.params["id"], todos: users[index].todos})
 
             UserExist = true
             break;
@@ -46,21 +94,21 @@ router.get('/todo/:id', (req, res) =>{
     }
     });
 
-router.get('/user/:id', (req, res) =>{  // codegrade and task instructions differ so this is to fix that 
-        let UserExist: Boolean = false
-        for (let index = 0; index < users.length; index++) {
-            if (req.params["id"] == users[index].name){
-    
-                res.send({todos: users[index].todos})
-    
-                UserExist = true
-                break;
-            }   
-        }
-        if (!UserExist){
-            res.send({msg: "User not found"})
-        }
-        });
+router.get('/users/:id', (req, res) =>{  // codegrade and task instructions differ so this is to fix that 
+    let UserExist: Boolean = false
+    for (let index = 0; index < users.length; index++) {
+        if (req.params["id"] == users[index].name){
+
+            res.json({user: req.params["id"], todos: users[index].todos})
+
+            UserExist = true
+            break;
+        }   
+    }
+    if (!UserExist){
+        res.send({msg: "User not found"})
+    }
+    });
     
 
 router.delete('/delete', (req, res) =>{
@@ -68,7 +116,6 @@ router.delete('/delete', (req, res) =>{
     let newUsers: TUser[] = [];
     for (let index = 0; index < users.length; index++) {
         if (req.body.name == users[index].name){
-            res.send({msg: "User deleted successfully."})
             UserExist = true
         } else {
             newUsers.push(users[index])
@@ -77,19 +124,21 @@ router.delete('/delete', (req, res) =>{
     if (!UserExist){
         res.send({msg: "User not found"})
     } else {
+        writeToFile()
         users = newUsers
+        res.send({msg: "User deleted successfully."})
     }
     });
 
 router.put('/update', (req, res) =>{
-    let UserExist: Boolean = false
+    let UserExist: Boolean = false 
     let TodoExist: Boolean = false
     let newTodos: string[] = [];
     for (let index = 0; index < users.length; index++) {
         if (req.body.name == users[index].name){
             for (let counter = 0; counter < users[index].todos.length; counter++) {
                 if (req.body.todo == users[index].todos[counter]){
-                    res.send({msg: "Todo deleted successfully."})
+                    
                     TodoExist = true
                 }else{
                     newTodos.push(users[index].todos[counter])
@@ -97,12 +146,14 @@ router.put('/update', (req, res) =>{
                 
             }
             if(!TodoExist){
+                writeToFile()
                 res.send({msg: "Todo not found"})
-                return
-            } 
-            users[index].todos = newTodos
-            UserExist = true
-            break;
+            } else {
+                users[index].todos = newTodos
+                UserExist = true
+                writeToFile()
+                res.send({msg: "Todo deleted successfully."})
+            }
         } 
     }
     if (!UserExist){
@@ -110,6 +161,9 @@ router.put('/update', (req, res) =>{
     } 
     });
 
+
+
+setup()
 // router.get('/hello', (req, res) =>{
 //     res.send({msg: "Hello world!"})
 // });

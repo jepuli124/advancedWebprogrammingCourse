@@ -43,21 +43,23 @@ function initializeCode() {
         // console.log(email.value)
         let todoList = document.getElementById("todoList");
         todoList.innerHTML = ''
-        let incomingData = await fetch("/user/" + name); 
+        let incomingData = await fetch("/todos/" + name); 
         let data = await incomingData.json()
         console.log(data)
         if(data.todos !== undefined){
             for (let index = 0; index < data.todos.length; index++) {
                 let listPart = document.createElement("li")
-                let listLink = document.createElement("a")
+                //let listLink = document.createElement("a")
 
                 listPart.innerHTML = data.todos[index];
                 listPart.className = "delete-task"
+                listPart.id = `listPart${index}`
+                //listLink.href = "javascript:console.log('clicked button');elementDeletion();return false;" // https://stackoverflow.com/questions/1070760/javascript-href-vs-onclick-for-callback-function-on-hyperlink
 
-                listLink.href = ""
-
-                //listPart.addEventListener("onclick", elementDeletion())
-                listPart.appendChild(listLink)
+                listPart.addEventListener("click", (e) => {
+                    elementDeletion(e)
+                })
+                // listPart.appendChild(listLink)
                 todoList.appendChild(listPart);
             }
             let deletebutton = document.getElementById("deleteUser");
@@ -95,6 +97,28 @@ async function buttonclick(){
       //https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript?page=2&tab=scoredesc#tab-top
 }
 
-async function elementDeletion() {
-    console.log("works")
+async function elementDeletion(e) {
+    let Dname = document.getElementById("searchInput");
+    let name = Dname.value
+
+    //let todo = "" //TODO
+
+    let incomingData = await fetch("/update", { 
+        method: "PUT",
+        body: JSON.stringify({
+        name: name,
+        todo: e.target.innerHTML
+        }),
+        headers: {
+        "Content-type": "application/json"
+        }
+    });
+
+    let data = await incomingData.json()
+    console.log(data.msg)
+    if(data.msg == "Todo deleted successfully."){
+        console.log("got here")
+        let listPart = document.getElementById(e.target.id)
+        listPart.remove()
+    }
 }

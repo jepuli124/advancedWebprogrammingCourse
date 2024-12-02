@@ -1,13 +1,60 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const router = (0, express_1.Router)();
 let users = [];
+function setup() {
+    try {
+        fs_1.default.open("./data.json", "r", (err, fd) => {
+            if (err !== null) {
+                fs_1.default.open("./data.json", "wx", (err, fd) => {
+                    if (fd !== undefined) {
+                        fs_1.default.close(fd);
+                    }
+                });
+            }
+            else {
+                readFromFile();
+                console.log("File found");
+            }
+            if (fd !== undefined) {
+                fs_1.default.close(fd);
+            }
+        });
+    }
+    catch (error) {
+        console.log("File not found");
+    }
+}
+function writeToFile() {
+    try { //https://nodejs.org/api/fs.html#fspromisesreadfilepath-options
+        const filePath = path_1.default.resolve('./data.json');
+        fs_1.default.writeFile(filePath, JSON.stringify(users), 'utf8', (err) => { });
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+async function readFromFile() {
+    try { //https://nodejs.org/api/fs.html#fspromisesreadfilepath-options
+        const filePath = path_1.default.resolve('./data.json');
+        fs_1.default.readFile(filePath, { encoding: 'utf8' }, (err, data) => {
+            users = JSON.parse(data);
+        });
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
 router.post('/add', (req, res) => {
     let UserExist = false;
     for (let index = 0; index < users.length; index++) {
         if (req.body.name == users[index].name) {
-            console.log(users[index].todos);
             users[index].todos.push(req.body.todos);
             UserExist = true;
             break;
@@ -20,13 +67,14 @@ router.post('/add', (req, res) => {
         };
         users.push(newUser);
     }
+    writeToFile();
     res.send({ msg: `Todo added successfully for user ${req.body.name}` });
 });
-router.get('/todo/:id', (req, res) => {
+router.get('/todos/:id', (req, res) => {
     let UserExist = false;
     for (let index = 0; index < users.length; index++) {
         if (req.params["id"] == users[index].name) {
-            res.send({ todos: users[index].todos });
+            res.json({ user: req.params["id"], todos: users[index].todos });
             UserExist = true;
             break;
         }
@@ -35,11 +83,11 @@ router.get('/todo/:id', (req, res) => {
         res.send({ msg: "User not found" });
     }
 });
-router.get('/user/:id', (req, res) => {
+router.get('/users/:id', (req, res) => {
     let UserExist = false;
     for (let index = 0; index < users.length; index++) {
         if (req.params["id"] == users[index].name) {
-            res.send({ todos: users[index].todos });
+            res.json({ user: req.params["id"], todos: users[index].todos });
             UserExist = true;
             break;
         }
@@ -53,7 +101,6 @@ router.delete('/delete', (req, res) => {
     let newUsers = [];
     for (let index = 0; index < users.length; index++) {
         if (req.body.name == users[index].name) {
-            res.send({ msg: "User deleted successfully." });
             UserExist = true;
         }
         else {
@@ -64,7 +111,9 @@ router.delete('/delete', (req, res) => {
         res.send({ msg: "User not found" });
     }
     else {
+        writeToFile();
         users = newUsers;
+        res.send({ msg: "User deleted successfully." });
     }
 });
 router.put('/update', (req, res) => {
@@ -75,7 +124,6 @@ router.put('/update', (req, res) => {
         if (req.body.name == users[index].name) {
             for (let counter = 0; counter < users[index].todos.length; counter++) {
                 if (req.body.todo == users[index].todos[counter]) {
-                    res.send({ msg: "Todo deleted successfully." });
                     TodoExist = true;
                 }
                 else {
@@ -83,18 +131,22 @@ router.put('/update', (req, res) => {
                 }
             }
             if (!TodoExist) {
+                writeToFile();
                 res.send({ msg: "Todo not found" });
-                return;
             }
-            users[index].todos = newTodos;
-            UserExist = true;
-            break;
+            else {
+                users[index].todos = newTodos;
+                UserExist = true;
+                writeToFile();
+                res.send({ msg: "Todo deleted successfully." });
+            }
         }
     }
     if (!UserExist) {
         res.send({ msg: "User not found" });
     }
 });
+setup();
 // router.get('/hello', (req, res) =>{
 //     res.send({msg: "Hello world!"})
 // });

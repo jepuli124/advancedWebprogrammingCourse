@@ -10,6 +10,8 @@ app.use(express.static(path.join(__dirname, "../public")))
 app.use("/", router)
 
 
+
 app.listen(port, () => {
     console.log(`hello world ${port}`);
 })
+ 

@@ -31,7 +31,7 @@ async function wikiItem(text){
 
     let headtext = document.createElement("h1");
     headtext.className = "wiki-header";
-    headtext.innerHTML = "Breed X";
+    headtext.innerHTML = "Breed " + text;
 
     let contentDiv = document.createElement("div");
     contentDiv.className = "wiki-content";
@@ -51,7 +51,7 @@ async function wikiItem(text){
     imgcontainer.className = "img-container";
 
     let imgdataFetched = await fetch('https://dog.ceo/api/breed/' + text + '/images/random');
-    let wikidataFetched = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+ text +'?redirect=false')
+    let wikidataFetched = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+ text +'?redirect=false');
 
     let wikidata = await wikidataFetched.json();
     let imgdata = await imgdataFetched.json();

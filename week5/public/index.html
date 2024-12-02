@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/main.js"></script> 
+    <title>Document</title>
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper">
+          <h1>hello you</h1>
+        </div>
+      </nav>
+    <div class="container">
+        <div class="col">
+            <form id="todoForm">
+                <label for="userInput">user: </label> <input type="text" id="userInput">
+                <label for="todoInput">todo: </label> <input type="text" id="todoInput"> 
+                <input type="submit" id="submit-data" class="btn"  value="enter">
+            </form>
+            <br>
+            <p id="confirmation"></p>
+
+        </div>
+        <div class="col">
+
+            <form id="searchForm" >
+                <label for="searchInput">user: </label> <input type="text" id="searchInput">
+                <input type="submit" id="search" class="btn" value="search">
+            </form>
+            <ul id="todoList" ></ul>
+            <button id="deleteUser" class="btn" onclick="buttonclick()" style="display: none;">delete user</button>
+
+        </div>
+    
+    </div>
+</body>
+</html>

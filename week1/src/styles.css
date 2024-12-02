@@ -7,13 +7,14 @@ body {
 }
 
 .wiki-item{
-    margin-left: 10px;
-    margin-right: 10px;
-    box-shadow: 10px;
+    margin-left: 5%;
+    margin-right: 5%;
+    box-shadow: 5%;
 }
 
 .wiki-content{
-    padding: 10px;
+    padding: 100px;
+    margin: 5%;
 }
 
 .container{
@@ -36,7 +37,4 @@ body {
         min-width: 50%;
         max-width: 50%;
     }
-
-
-
   }
