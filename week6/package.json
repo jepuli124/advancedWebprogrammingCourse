@@ -1,0 +1,28 @@
+{
+  "name": "week6",
+  "version": "1.0.2",
+  "description": "week6",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc-watch --onSuccess \"node dist/server.js\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/morgan": "^1.9.9",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.9.0",
+    "tsc-watch": "^6.2.1"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "materialize-css": "^1.0.0-rc.2",
+    "mongoose": "^8.8.3",
+    "multer": "^1.4.5-lts.1",
+    "path": "^0.12.7",
+    "tsc-watch": "^6.2.1",
+    "uuid": "^11.0.3"
+  }
+}

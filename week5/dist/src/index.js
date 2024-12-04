@@ -30,39 +30,25 @@ function setup() {
 //       }
 //     }
 router.post('/add', async (req, res) => {
-    let UserExist = false;
     try {
-        const users = await User_1.User.find();
-        for (let index = 0; index < users.length; index++) {
-            if (req.body.name == users[index].name) {
-                await User_1.User.deleteOne({ User: users[index].name });
-                const newUser = new User_1.User({
-                    name: req.body.name,
-                    todos: []
-                });
-                for (let counter = 0; counter < req.body.todos.length; counter++) {
-                    newUser.todos.push(new User_1.Todo({ todo: users[index].todos[counter].todo }));
-                }
-                for (let counter = 0; counter < req.body.todos.length; counter++) {
-                    newUser.todos.push(new User_1.Todo({ todo: req.body.todos[counter] }));
-                }
-                console.log("existing user", newUser, " Todos:");
-                await newUser.save();
-                UserExist = true;
-                break;
-            }
-        }
-        if (!UserExist) {
+        const user = await User_1.User.findOne({ name: req.body.name });
+        if (user == null) {
+            console.log("New user, New todo incoming: ", req.body.todo);
             const newTodo = new User_1.Todo({
-                todo: req.body.todos,
+                todo: req.body.todo,
                 checked: false
             });
             const newUser = new User_1.User({
                 name: req.body.name,
-                todos: [newTodo]
+                todos: newTodo
             });
             console.log("New user", newUser);
             await newUser.save();
+        }
+        else {
+            console.log("User exist, New todo incoming: ", req.body.todo);
+            user.todos.push(new User_1.Todo({ todo: req.body.todo }));
+            await user.save();
         }
         // writeToFile()
         res.send({ msg: `Todo added successfully for user ${req.body.name}` });
@@ -81,8 +67,13 @@ router.get('/todos/:id', async (req, res) => {
         let UserExist = false;
         for (let index = 0; index < users.length; index++) {
             if (req.params["id"] == users[index].name) {
-                console.log("User todos:", users[index].todos);
-                res.json({ user: req.params["id"], todos: users[index].todos });
+                console.log("User todos in id:", users[index].todos);
+                let returnTodos = [];
+                for (let counter = 0; counter < users[index].todos.length; counter++) {
+                    returnTodos.push(users[index].todos[counter].todo);
+                }
+                console.log("Return todos in id", returnTodos);
+                res.json({ user: req.params["id"], todos: returnTodos });
                 UserExist = true;
                 break;
             }
@@ -129,42 +120,58 @@ router.get('/todos/:id', async (req, res) => {
 //     });
 router.put('/update', async (req, res) => {
     try { //template from source code
-        const users = await User_1.User.find();
-        if (!users) {
+        const user = await User_1.User.findOne({ name: req.body.name });
+        if (!user) {
             return res.status(404).json({ message: "No user found" });
         }
-        let UserExist = false;
         let TodoExist = false;
         let newTodos = [];
-        for (let index = 0; index < users.length; index++) {
-            if (req.body.name == users[index].name) {
-                for (let counter = 0; counter < users[index].todos.length; counter++) {
-                    if (req.body.todo == users[index].todos[counter]) {
-                        TodoExist = true;
-                    }
-                    else {
-                        newTodos.push(new User_1.Todo({ todo: users[index].todos[counter].todo }));
-                    }
-                }
-                if (!TodoExist) {
-                    // writeToFile()
-                    res.send({ msg: "Todo not found" });
-                }
-                else {
-                    await User_1.User.deleteOne({ User: users[index].name });
-                    const newUser = new User_1.User({
-                        name: users[index].name,
-                        todos: newTodos
-                    });
-                    await newUser.save();
-                    UserExist = true;
-                    // writeToFile()
-                    res.send({ msg: "Todo deleted successfully." });
-                }
+        for (let counter = 0; counter < user.todos.length; counter++) {
+            if (req.body.todo == user.todos[counter].todo) {
+                TodoExist = true;
+            }
+            else {
+                newTodos.push(new User_1.Todo({ todo: user.todos[counter].todo }));
             }
         }
-        if (!UserExist) {
-            res.send({ msg: "User not found" });
+        if (!TodoExist) {
+            // writeToFile()
+            console.log("Todo not found, Update todos:", newTodos);
+            res.send({ msg: "Todo not found" });
+        }
+        else {
+            console.log("Todo found, Update todos:", newTodos);
+            user.todos = newTodos;
+            await user.save();
+            // writeToFile()
+            res.send({ msg: "Todo deleted successfully." });
+        }
+    }
+    catch (error) {
+        console.log(`Error while fetching in update: ${error}`);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+});
+router.put('/updateTodo', async (req, res) => {
+    try { //template from source code
+        const user = await User_1.User.findOne({ name: req.body.name });
+        if (!user) {
+            return res.status(404).json({ message: "No user found" });
+        }
+        let TodoExist = false;
+        console.log("Update Todo incoming body", req.body);
+        for (let counter = 0; counter < user.todos.length; counter++) {
+            if (req.body.todo == user.todos[counter].todo) {
+                TodoExist = true;
+                user.todos[counter].checked = req.body.checked;
+            }
+        }
+        if (!TodoExist) {
+            res.send({ msg: "Todo not found" });
+        }
+        else {
+            await user.save();
+            res.send({ msg: "Todo checked successfully." });
         }
     }
     catch (error) {

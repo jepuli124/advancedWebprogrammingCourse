@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/main.js"></script> 
+    
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="center-align">Offers</h1>
+        <form id="offerForm" class="card-panel">
+            <div class="input-field">
+                <label for="title">Title: </label>
+                <input type="text" id="title" name="title">
+            </div>
+            <div class="input-field">
+                <label for="description">description: </label> 
+                <textarea type="text" id="description" class="materialize-textarea"></textarea>
+            </div>
+            <div class="input-field">
+                <label for="price">Price: </label>
+                <input type="text" id="price" name="price">
+            </div>
+            
+            <div class="file-field input-field">
+                <div class="btn">
+                    <span>Upload image: </span>
+                    <input type="file" name="image" id="image" accept="image/*" >
+                </div>
+                <div class="file-path-wrapper">
+                    <input type="text" placeholder="Upload an image" class="file-path validate">
+                </div>
+            </div>
+
+            <button type="submit" id="submit" class="btn waver-effect waves-light"> submit </button>
+
+        </form>
+        <div id="offersContainer" class="row">
+    
+        </div>
+
+    </div>
+    
+</body>
+</html>
