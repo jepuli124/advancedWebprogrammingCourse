@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/index.js"></script> 
+    <!-- <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/> -->
+    <!-- <script type="text/javascript" src="js/materialize.min.js" defer></script> -->
+    <title>Document</title>
+</head>
+<body>
+
+    <h1>Secrets and wonders can be found in the most tenebrous corners of this place</h1>
+    
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper">
+                <button id="logout">Logout</button>
+                <ul class="right">
+                    <li>
+                        <form id="loginForm" class="row">
+                            <div class="input-field col">
+                                <label for="email">Email: </label>
+                                <input type="text" id="email" name="email" class="navbar-input">
+                            </div>
+                            <div class="input-field col">
+                                <label for="password">Password: </label>
+                                <input type="text" id="password" name="password" class="navbar-input">
+                            </div>
+
+                            <div class="input-field col">
+                                <input type="submit" id="submit" class="btn waver-effect waves-light navbar-input"> submit </button>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    
+    <div class="container">
+        <div id="topicForm"></div>
+        <div id="topics" class="card z-depth-2 hoverable grey lighten-2">
+
+        </div>
+    </div>
+</body>
+</html>
