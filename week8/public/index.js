@@ -135,6 +135,7 @@ function createTopicForm(){
       "authorization": `Bearer ${token}`
       }
     })
+    loadTopics()
   })
 
   button.addEventListener("click", async (event) => {
@@ -156,6 +157,7 @@ function createTopicForm(){
       "authorization": `Bearer ${token}`
       }
     })
+    loadTopics()
   })
 }
 
@@ -164,25 +166,28 @@ async function loadTopics(){
   let topicDiv = document.getElementById("topics");
   topicDiv.innerHTML = ""
 
-  let uselessButton = document.createElement("button")
-  uselessButton.id = "deleteTopic"
-  topicDiv.appendChild(uselessButton)
+  // let uselessButton = document.createElement("button")
+  // uselessButton.id = "deleteTopic"
+  // topicDiv.appendChild(uselessButton)
 
-  let uselessDiv = document.createElement("div")
-  uselessDiv.className = "card z-depth-2 hoverable grey lighten-2" 
+  // let uselessDiv = document.createElement("div")
+  // uselessDiv.classList.add("card")
+  // uselessDiv.classList.add("z-depth-2")
+  // uselessDiv.classList.add("hoverable")
+  // uselessDiv.classList.add("grey")
+  // uselessDiv.classList.add("lighten-2") 
 
-  uselessButton.addEventListener("click", async (event) => {
-    uselessButton.remove()
-    uselessDiv.remove()
-    })
-  
+  // topicDiv.appendChild(uselessDiv)
 
-  uselessButton
+  // uselessButton.addEventListener("click", async (event) => {
+  //   uselessButton.remove()
+  //   uselessDiv.remove()
+  //   })
 
   let incomingData = await fetch("/api/topics", { 
       method: "GET",
       headers: {
-      "Content-type": "application/json"
+        "Content-type": "application/json"
       }
   }); 
 
@@ -209,8 +214,13 @@ async function loadTopics(){
     deleteButton.id = "deleteTopic"
     div.id = element._id
 
-    div.className = "card z-depth-2 hoverable grey lighten-2"
-    innerDiv.className = "card-content card z-depth-2 hoverable grey lighten-2"
+    div.classList.add("card")
+    div.classList.add("z-depth-2")
+    div.classList.add("hoverable")
+    div.classList.add("grey")
+    div.classList.add("lighten-2")
+    
+    innerDiv.className = "card-content"
     span.className = "card-title"
     p2.className = "grey-text text-darken-2"
     innerinnerDiv.className = "card-action"
@@ -223,8 +233,8 @@ async function loadTopics(){
     innerDiv.appendChild(span)
     innerDiv.appendChild(p1)
     innerDiv.appendChild(p2)
-    innerDiv.appendChild(innerinnerDiv)
 
+    div.appendChild(innerinnerDiv)
     div.appendChild(innerDiv)
 
     topicDiv.appendChild(div)
