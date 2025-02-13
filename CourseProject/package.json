@@ -1,0 +1,17 @@
+{
+  "name": "courseproject",
+  "version": "1.0.0",
+  "description": "very epic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "cd client && npm install",
+    "dev:client": "cd client && npm run dev",
+    "preinstall": "cd server && npm install",
+    "dev:server": "cd server && npm run dev",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start"
+  },
+  "author": "Konsta Jalkanen 000489689",
+  "license": "ISC"
+}
